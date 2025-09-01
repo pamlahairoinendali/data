@@ -53,6 +53,9 @@
       outline: none;
       transition: border-color 0.3s ease;
     }
+    .form-group textarea {
+      resize: none;
+    }
     .form-group label {
       position: absolute;
       top: 50%;
@@ -153,10 +156,10 @@
           <label for="nama">Nama Lengkap</label>
         </div>
 
-<div class="form-group">
-  <input type="tel" id="kontak" name="kontak" placeholder=" " pattern="[0-9+ ]*" required>
-  <label for="kontak">Nomor HP</label>
-</div>
+        <div class="form-group">
+          <input type="tel" id="kontak" name="kontak" placeholder=" " pattern="[0-9+ ]*" required>
+          <label for="kontak">Nomor HP</label>
+        </div>
 
         <div class="form-group">
           <select id="ukuran" name="ukuran" required>
@@ -183,7 +186,7 @@
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbylTWDG1HaXPCUXtpiCvc5YIV0ctAWEzBGBndfhSeXEOk_vM8brkl1FSPEN95J5EVtulw/exec"; 
+    const scriptURL = "https://script.google.com/macros/s/AKfycbylTWDG1HaXPCUXtpiCvc5YIV0ctAWEzBGBndfhSeXEOk_vM8brkl1FSPEN95J5EVtulw/exec";
     const form = document.getElementById("pesanForm");
     const statusDiv = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
@@ -198,18 +201,19 @@
 
       fetch(scriptURL, {
         method: "POST",
-        body: new URLSearchParams(formData)
+        body: formData
       })
-      .then(res => res.json())
+      .then(res => res.text()) // ambil response sebagai teks
       .then(data => {
         statusDiv.style.display = "block";
-        if (data.result === "success") {
+
+        if (data.toLowerCase().includes("success")) {
           statusDiv.className = "success";
           statusDiv.textContent = "✅ Pesanan berhasil dikirim!";
           form.reset();
         } else {
           statusDiv.className = "error";
-          statusDiv.textContent = "❌ Error: " + data.error;
+          statusDiv.textContent = "❌ Gagal: " + data;
         }
 
         submitBtn.disabled = false;
@@ -229,4 +233,3 @@
   </script>
 </body>
 </html>
-
