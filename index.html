@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pemesanan Baju</title>
+  <title>Pemesanan Baju Sidang</title>
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -153,10 +153,10 @@
           <label for="nama">Nama Lengkap</label>
         </div>
 
-        <div class="form-group">
-          <input type="number" id="kontak" name="kontak" placeholder=" " required>
-          <label for="kontak">Nomor HP</label>
-        </div>
+<div class="form-group">
+  <input type="tel" id="kontak" name="kontak" placeholder=" " pattern="[0-9+ ]*" required>
+  <label for="kontak">Nomor HP</label>
+</div>
 
         <div class="form-group">
           <select id="ukuran" name="ukuran" required>
@@ -229,3 +229,4 @@
   </script>
 </body>
 </html>
+
