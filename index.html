@@ -173,35 +173,29 @@
         method: "POST",
         body: formData
       })
-      .then(res => res.json()) // pastikan Apps Script kirim JSON
-      .then(data => {
-        statusDiv.style.display = "block";
+.then(res => res.json())
+.then(data => {
+  statusDiv.style.display = "block";
 
-        if (data.status === "success") {
-          statusDiv.className = "success";
-          statusDiv.textContent = "✅ Pesanan berhasil dikirim!";
-          form.reset();
+  if (data.result === "success") {
+    statusDiv.className = "success";
+    statusDiv.textContent = "✅ Pesanan berhasil dikirim!";
+    form.reset();
 
-          setTimeout(() => {
-            window.location.href = "www.pamlahairoinendali.site"; // ganti ke URL tujuan
-          }, 1500);
-        } else {
-          statusDiv.className = "error";
-          statusDiv.textContent = "❌ Gagal: " + data.message;
-          submitBtn.disabled = false;
-          submitBtn.textContent = "🛒 Pesan Sekarang";
-        }
-      })
-      .catch(err => {
-        statusDiv.style.display = "block";
-        statusDiv.className = "error";
-        statusDiv.textContent = "❌ Request gagal: " + err;
-        submitBtn.disabled = false;
-        submitBtn.textContent = "🛒 Pesan Sekarang";
-      });
+    setTimeout(() => {
+      window.location.href = "www.pamlahairoinendali.site"; 
+    }, 1500);
+  } else {
+    statusDiv.className = "error";
+    statusDiv.textContent = "❌ " + data.error;
+    submitBtn.disabled = false;
+    submitBtn.textContent = "🛒 Pesan Sekarang";
+  }
+})
     });
   </script>
 </body>
 </html>
+
 
 
