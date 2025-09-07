@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Pemesanan Baju</title>
   <style>
     body {
@@ -29,17 +28,23 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    h2 {
+    h2 { text-align: center; margin-bottom: 20px; color: #333; }
+    /* Timer */
+    #timer-text {
       text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: 600;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 5px;
       color: #444;
     }
+    #timer-countdown {
+      text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      color: #ff69b4; /* countdown pink */
+      margin-bottom: 15px;
+    }
+    label { display: block; margin-top: 12px; font-weight: 600; color: #444; }
     input, select, textarea {
       width: 100%;
       padding: 10px 12px;
@@ -49,17 +54,9 @@
       font-size: 14px;
       transition: border-color 0.3s ease;
     }
-    input:focus, select:focus, textarea:focus {
-      border-color: #6c63ff;
-      outline: none;
-    }
-    textarea {
-      resize: none;
-    }
-    small {
-      font-size: 12px;
-      color: #666;
-    }
+    input:focus, select:focus, textarea:focus { border-color: #6c63ff; outline: none; }
+    textarea { resize: none; }
+    small { font-size: 12px; color: #666; }
     button {
       margin-top: 18px;
       padding: 12px;
@@ -77,14 +74,8 @@
       align-items: center;
       gap: 8px;
     }
-    button:hover:not(:disabled) {
-      background: #574bdb;
-      transform: translateY(-2px);
-    }
-    button:disabled {
-      background: #aaa;
-      cursor: not-allowed;
-    }
+    button:hover:not(:disabled) { background: #574bdb; transform: translateY(-2px); }
+    button:disabled { background: #aaa; cursor: not-allowed; }
     .spinner {
       border: 3px solid #fff;
       border-top: 3px solid transparent;
@@ -93,10 +84,7 @@
       height: 16px;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     #status {
       margin-top: 15px;
       text-align: center;
@@ -106,25 +94,17 @@
       border-radius: 6px;
       animation: slideDown 0.5s ease;
     }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .success {
-      color: #155724;
-      background-color: #d4edda;
-      border: 1px solid #c3e6cb;
-    }
-    .error {
-      color: #721c24;
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
-    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; }
+    .error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Form Pemesanan Baju Sidang</h2>
+    <!-- Timer -->
+    <div id="timer-text"></div>
+    <div id="timer-countdown"></div>
 
     <form id="pesanForm">
       <label for="nama">Nama</label>
@@ -159,9 +139,44 @@
     const form = document.getElementById("pesanForm");
     const statusDiv = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
+    const timerText = document.getElementById("timer-text");
+    const timerCountdown = document.getElementById("timer-countdown");
+
+    // Batas waktu 20 Sep 2025 23:59 WIT (UTC+9)
+    const deadlineWIT = new Date("2025-09-20T23:59:00+09:00");
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = deadlineWIT - now;
+
+      if (diff <= 0) {
+        timerText.textContent = "";
+        timerCountdown.textContent = "⏰ Form sudah ditutup!";
+        submitBtn.disabled = true;
+        form.querySelectorAll("input, select, textarea").forEach(el => el.disabled = true);
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000*60*60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000*60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      timerText.textContent = `Form aktif sampai tgl 20 September 2025  Jam 23:59 WIT`;
+      timerCountdown.textContent = `Sisa ${days} Hari ${hours} Jam ${minutes} Menit ${seconds} Detik`;
+    }
+
+    const interval = setInterval(updateTimer, 1000);
+    updateTimer(); // update segera saat load
 
     form.addEventListener("submit", e => {
       e.preventDefault();
+
+      if (new Date() > deadlineWIT) {
+        alert("Waktu habis, form sudah ditutup!");
+        return;
+      }
 
       if (!confirm("Ko yakin data sudah benar k?")) return;
 
@@ -174,32 +189,33 @@
         method: "POST",
         body: formData
       })
-.then(res => res.json())
-.then(data => {
-  statusDiv.style.display = "block";
+      .then(res => res.json())
+      .then(data => {
+        statusDiv.style.display = "block";
 
-  if (data.result === "success") {
-    statusDiv.className = "success";
-    statusDiv.textContent = "✅ Pesanan berhasil dikirim!";
-    form.reset();
+        if (data.result === "success") {
+          statusDiv.className = "success";
+          statusDiv.textContent = "✅ Pesanan berhasil dikirim!";
+          form.reset();
 
-    setTimeout(() => {
-      window.location.href = "https://www.pamlahairoinendali.site"; 
-    }, 1500);
-  } else {
-    statusDiv.className = "error";
-    statusDiv.textContent = "❌ " + data.error;
-    submitBtn.disabled = false;
-    submitBtn.textContent = "🛒 Pesan Sekarang";
-  }
-})
+          setTimeout(() => {
+            window.location.href = "https://www.pamlahairoinendali.site"; 
+          }, 1500);
+        } else {
+          statusDiv.className = "error";
+          statusDiv.textContent = "❌ " + data.error;
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🛒 Pesan Sekarang";
+        }
+      })
+      .catch(err => {
+        statusDiv.style.display = "block";
+        statusDiv.className = "error";
+        statusDiv.textContent = "❌ Terjadi kesalahan: " + err.message;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "🛒 Pesan Sekarang";
+      });
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
