@@ -138,7 +138,7 @@
         <label for="alamat">Alamat</label>
         <textarea id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap" required></textarea>
 
-        <button type="submit" id="submitBtn">🛒 Pesan Sekarang</button>
+        <button type="submit" id="submitBtn">🛒 beli</button>
       </form>
 
       <div id="status"></div>
