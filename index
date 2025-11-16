@@ -177,7 +177,7 @@
 
           // kembalikan tombol ke normal
           submitBtn.disabled = false;
-          submitBtn.textContent = "🛒 Pesan Sekarang";
+          submitBtn.textContent = "🛒 beli yoo";
 
           // auto-hide status setelah 5 detik
           setTimeout(() => {
